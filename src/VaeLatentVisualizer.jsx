@@ -7,6 +7,8 @@ const IMG_H = 96;
 const IMG_W = 96;
 const SCALE = 4; // upscale factor → 96 * 4 = 384
 
+const UNUSED_LATENTS = [0, 2, 1, 3, 4, 6, 7, 8, 13];
+
 function VaeLatentVisualizer() {
   const [session, setSession] = useState(null);
   const [latent, setLatent] = useState(() => Array(LATENT_DIM).fill(0));
@@ -134,7 +136,7 @@ function VaeLatentVisualizer() {
 
   return (
     <div style={{ justifyContent: "center", padding: 16, fontFamily: "sans-serif" }}>
-      <h2>VAE Latent Space Visualizer (dim = 16)</h2>
+      <h2>None-interpretable Latent Space Visualizer (dim = 16)</h2>
 
       {loading && <p>Loading ONNX model…</p>}
       {error && (
@@ -143,53 +145,58 @@ function VaeLatentVisualizer() {
         </p>
       )}
 
-      <div style={{ marginBottom: 12 }}>
-        <button onClick={resetLatent} style={{ fontSize: 20, marginRight: 18 }}>
-          Reset (all 0)
-        </button>
-        <button onClick={randomLatent} style={{ fontSize: 20 }}>Random latent</button>
-      </div>
-
       <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
         {/* Sliders */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: 12,
+            gap: 52,
             maxHeight: "100%",
             maxWidth: "100%",
             overflowY: "auto",
           }}
         >
-          {latent.map((value, i) => (
-            <div key={i}>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: 20,
-                  marginBottom: 4,
-                  fontFamily: "monospace",
-                }}
-              >
-                z[{i}] = {value.toFixed(2)}
-              </label>
-              <input
-                type="range"
-                min={-3}
-                max={3}
-                step={0.05}
-                value={value}
-                onChange={(e) => handleSliderChange(i, Number(e.target.value))}
-                style={{ width: 200 }}
-              />
-            </div>
-          ))}
+          {latent.map((value, i) => {
+            const isUnused = UNUSED_LATENTS.includes(i);
+
+            return (
+              <div key={i}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: 20,
+                    marginBottom: 4,
+                    fontFamily: "monospace",
+                    color: isUnused ? "#888" : "#000",
+                  }}
+                >
+                  z[{i}] = {value.toFixed(2)}
+                </label>
+                <input
+                  type="range"
+                  min={-3}
+                  max={3}
+                  step={0.05}
+                  value={value}
+                  onChange={(e) => handleSliderChange(i, Number(e.target.value))}
+                  style={{
+                    width: 200,
+                    // accentColor controls slider thumb/track color in modern browsers
+                    accentColor: isUnused ? "#888888" : "#2563eb", // grey vs blue
+                  }}
+                />
+              </div>
+            );
+          })}
         </div>
 
         {/* Canvases */}
         <div>
           {/* offscreen small canvas (96x96) */}
+          <p style={{ fontSize: 25, color: "#666", marginTop: 8 }}>
+            Decoded image
+          </p>
           <canvas
             ref={smallCanvasRef}
             width={IMG_W}
@@ -209,13 +216,23 @@ function VaeLatentVisualizer() {
               backgroundColor: "#000",
             }}
           />
-          <p style={{ fontSize: 20, color: "#666", marginTop: 8 }}>
-            Decoded image
-          </p>
         </div>
+      </div>
+
+      <div style={{ marginTop: 20 }}>
+        <button onClick={resetLatent} style={{ fontSize: 30 }}>
+          Reset (all 0)
+        </button>
+        <button
+          onClick={randomLatent}
+          style={{ fontSize: 30, marginLeft: 100 }}
+        >
+          Random latent
+        </button>
       </div>
     </div>
   );
 }
 
 export default VaeLatentVisualizer;
+
