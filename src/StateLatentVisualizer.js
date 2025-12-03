@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as ort from "onnxruntime-web";
 
-const STATE_DIM = 4;
+const STATE_DIM = 2;
 const IMG_H = 96;
 const IMG_W = 96;
 const SCALE = 4;
@@ -23,8 +23,7 @@ function StateLatentVisualizer() {
     async function loadModel() {
       try {
         setLoading(true);
-        // assumes public/state_to_image.onnx → /state_to_image.onnx
-        const s = await ort.InferenceSession.create("/state_to_image.onnx");
+        const s = await ort.InferenceSession.create("/decoder_interpretable.onnx");
         setSession(s);
       } catch (e) {
         console.error(e);
@@ -45,15 +44,13 @@ function StateLatentVisualizer() {
       // Here we treat sliders as *normalized* values; velocity and angle_vel = 0.
       const stateArr = new Float32Array(STATE_DIM);
       stateArr[0] = position; // pos
-      stateArr[1] = 0.0;      // vel
-      stateArr[2] = angle;    // angle
-      stateArr[3] = 0.0;      // angle_vel
+      stateArr[1] = angle;    // angle
 
       const stateTensor = new ort.Tensor("float32", stateArr, [1, STATE_DIM]);
 
       try {
         const outputs = await session.run({ state: stateTensor });
-        const xRecon = outputs["x_recon"]; // [1, 3, 96, 96]
+        const xRecon = outputs["image"]; // [1, 3, 96, 96]
         const data = xRecon.data;          // Float32Array
 
         // --- Draw 96x96 image into small canvas ---
@@ -139,9 +136,9 @@ function StateLatentVisualizer() {
             </label>
             <input
               type="range"
-              min={-3}
-              max={3}
-              step={0.05}
+              min={-2.14}
+              max={2.14}
+              step={0.01}
               value={position}
               onChange={(e) => setPosition(Number(e.target.value))}
               style={{ width: 260, accentColor: "#2563eb" }}
@@ -161,9 +158,9 @@ function StateLatentVisualizer() {
             </label>
             <input
               type="range"
-              min={-3}
-              max={3}
-              step={0.05}
+              min={-3.14159}
+              max={3.14159}
+              step={0.01}
               value={angle}
               onChange={(e) => setAngle(Number(e.target.value))}
               style={{ width: 260, accentColor: "#2563eb" }}
