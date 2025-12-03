@@ -136,7 +136,7 @@ function VaeLatentVisualizer() {
 
   return (
     <div style={{ justifyContent: "center", padding: 16, fontFamily: "sans-serif" }}>
-      <h2>None-interpretable Latent Space Visualizer (dim = 16)</h2>
+      <h2>Latent Space Visualizer (dim = 16)</h2>
 
       {loading && <p>Loading ONNX model…</p>}
       {error && (
