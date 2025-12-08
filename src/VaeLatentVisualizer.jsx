@@ -7,7 +7,7 @@ const IMG_H = 96;
 const IMG_W = 96;
 const SCALE = 4; // upscale factor → 96 * 4 = 384
 
-const UNUSED_LATENTS = [0, 2, 1, 3, 4, 6, 7, 8, 13];
+const UNUSED_LATENTS = [0, 2, 1, 3, 4, 6, 7, 8, 13, 14];
 
 function VaeLatentVisualizer() {
   const [session, setSession] = useState(null);
@@ -136,7 +136,7 @@ function VaeLatentVisualizer() {
 
   return (
     <div style={{ justifyContent: "center", padding: 16, fontFamily: "sans-serif" }}>
-      <h2>Latent Space Visualizer (dim = 16)</h2>
+      <h2>Latent</h2>
 
       {loading && <p>Loading ONNX model…</p>}
       {error && (
@@ -194,7 +194,7 @@ function VaeLatentVisualizer() {
         {/* Canvases */}
         <div>
           {/* offscreen small canvas (96x96) */}
-          <p style={{ fontSize: 25, color: "#666", marginTop: 8 }}>
+          <p style={{ fontSize: 25, color: "#666", marginBottom: 8 }}>
             Decoded image
           </p>
           <canvas
@@ -216,20 +216,22 @@ function VaeLatentVisualizer() {
               backgroundColor: "#000",
             }}
           />
+          <div style={{ marginTop: 20 }}>
+            <button onClick={resetLatent} style={{ padding: "8px 16px", fontSize: 25 }}>
+              Reset Latent
+            </button>
+            <button
+              onClick={randomLatent}
+              style={{ padding: "8px 16px", fontSize: 25, marginLeft: 17 }}
+            >
+              Random latent
+            </button>
+          </div>
         </div>
+
       </div>
 
-      <div style={{ marginTop: 20 }}>
-        <button onClick={resetLatent} style={{ fontSize: 30 }}>
-          Reset (all 0)
-        </button>
-        <button
-          onClick={randomLatent}
-          style={{ fontSize: 30, marginLeft: 100 }}
-        >
-          Random latent
-        </button>
-      </div>
+
     </div>
   );
 }

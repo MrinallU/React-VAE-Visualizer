@@ -111,7 +111,7 @@ function StateLatentVisualizer() {
 
   return (
     <div style={{ padding: 16, fontFamily: "sans-serif" }}>
-      <h2>Interpretable Visualizer</h2>
+      <h2>Interpretable</h2>
 
       {loading && <p>Loading state_to_image.onnx…</p>}
       {error && (
@@ -122,7 +122,15 @@ function StateLatentVisualizer() {
 
       <div style={{ display: "flex", gap: 32, alignItems: "flex-start" }}>
         {/* Sliders */}
-        <div style={{ minWidth: 280 }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 52,
+          maxHeight: "100%",
+          maxWidth: "100%",
+          overflowY: "auto",
+        }}>
+
           <div style={{ marginBottom: 24 }}>
             <label
               style={{
@@ -132,7 +140,7 @@ function StateLatentVisualizer() {
                 fontFamily: "monospace",
               }}
             >
-              position (state[0]) = {position.toFixed(2)}
+              Position  = {position.toFixed(2)}
             </label>
             <input
               type="range"
@@ -141,7 +149,10 @@ function StateLatentVisualizer() {
               step={0.01}
               value={position}
               onChange={(e) => setPosition(Number(e.target.value))}
-              style={{ width: 260, accentColor: "#2563eb" }}
+              style={{
+                width: 200,
+                accentColor: "#2563eb",
+              }}
             />
           </div>
 
@@ -154,7 +165,7 @@ function StateLatentVisualizer() {
                 fontFamily: "monospace",
               }}
             >
-              angle (state[2]) = {angle.toFixed(2)}
+              Angle = {angle.toFixed(2)}
             </label>
             <input
               type="range"
@@ -163,42 +174,54 @@ function StateLatentVisualizer() {
               step={0.01}
               value={angle}
               onChange={(e) => setAngle(Number(e.target.value))}
-              style={{ width: 260, accentColor: "#2563eb" }}
+              style={{
+                width: 200,
+                accentColor: "#2563eb",
+              }}
             />
           </div>
 
-          <button onClick={resetState} style={{ marginTop: 12, fontSize: 26 }}>
-            Reset (all 0)
-          </button>
+
         </div>
 
         {/* Canvases */}
         <div>
-          <p style={{ fontSize: 20, color: "#666", marginBottom: 8 }}>
+
+          <p style={{ fontSize: 25, color: "#666", marginBottom: 8 }}>
             Decoded image
           </p>
-          {/* offscreen small canvas */}
-          <canvas
-            ref={smallCanvasRef}
-            width={IMG_W}
-            height={IMG_H}
-            style={{ display: "none" }}
-          />
-          {/* visible upscaled canvas */}
-          <canvas
-            ref={bigCanvasRef}
-            width={IMG_W * SCALE}
-            height={IMG_H * SCALE}
-            style={{
-              width: `${IMG_W * SCALE}px`,
-              height: `${IMG_H * SCALE}px`,
-              imageRendering: "pixelated",
-              border: "1px solid #ccc",
-              backgroundColor: "#000",
-            }}
-          />
+          <div>
+            {/* offscreen small canvas */}
+            <canvas
+              ref={smallCanvasRef}
+              width={IMG_W}
+              height={IMG_H}
+              style={{ display: "none" }}
+            />
+
+            {/* visible upscaled canvas */}
+            <canvas
+              ref={bigCanvasRef}
+              width={IMG_W * SCALE}
+              height={IMG_H * SCALE}
+              style={{
+                width: `${IMG_W * SCALE}px`,
+                height: `${IMG_H * SCALE}px`,
+                imageRendering: "pixelated",
+                border: "1px solid #ccc",
+                backgroundColor: "#000",
+              }}
+            />
+            <br />
+            <button onClick={resetState} style={{ padding: "8px 16px", marginTop: 12, fontSize: 25 }}>
+              Reset State
+            </button>
+          </div>
+
         </div>
+
       </div>
+
     </div>
   );
 }
