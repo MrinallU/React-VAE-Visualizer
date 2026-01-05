@@ -187,8 +187,13 @@ export default function PIWMVisualizer() {
         right={rightBadges}
         callout={
           <>
-            <b>Recommended flow:</b> Set a clean GT state → <b>Sync GT → VAE + PIWM</b> → apply actions (Left/Right) →
-            observe drift. If anything looks off, reset + sync again.
+            <b>Recommended flow:</b> set a clean gt state → <b>sync gt → vae + piwm</b> → apply actions (left/right) →
+            observe drift. if anything looks off, reset + sync again.
+            <br />
+            <b>Note:</b> Syncing only sets the position and angle, to reset velocities click on the reset buttons in all boxes
+            and resync with desired position and angle.
+
+
           </>
         }
       />
